@@ -80,7 +80,12 @@ void WiFiManager::addParameter(WiFiManagerParameter *p) {
 
 void WiFiManager::setupConfigPortal() {
   dnsServer.reset(new DNSServer());
-  server.reset(new ESP8266WebServer(IPAddress(192.168.4.1), 80));
+  server.reset(new ESP8266WebServer(IPAddress(192,168,4,1), 80));
+  //To upload through terminal you can use: curl -F "image=@firmware.bin" 192.168.4.1/update
+  updateServer.reset(new ESP8266HTTPUpdateServer());
+  // Note that the updateServer also stores a reference to the server. Since
+  // they are destroyed at the same time I assume it all goes well.
+  updateServer->setup(server.get());
 
   DEBUG_WM(F(""));
   _configPortalStart = millis();
